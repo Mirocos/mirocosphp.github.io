@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[TOC] Ray Casting II NoteRay-Box Intersection(射线- 方体求交) 前提   轴对齐  Box：从(X1, Y1, Z1) - - &amp;gt; (X2, Y2, Z2)  Ray: P(t) = $R_o$ + t$R_d$    朴素求交方法 6个平面方程，计算所有交点  最近的交点在Box上  注意交点是在每个平面的正确一侧：Ax + By + Cz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ray Casting II Note">
+<meta property="og:url" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/index.html">
+<meta property="og:site_name" content="Mirocos&#39;s blog">
+<meta property="og:description" content="[TOC] Ray Casting II NoteRay-Box Intersection(射线- 方体求交) 前提   轴对齐  Box：从(X1, Y1, Z1) - - &amp;gt; (X2, Y2, Z2)  Ray: P(t) = $R_o$ + t$R_d$    朴素求交方法 6个平面方程，计算所有交点  最近的交点在Box上  注意交点是在每个平面的正确一侧：Ax + By + Cz">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/testpara.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/onedemension_example.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/closest_farest.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/missed.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/behind.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/correctIntersection.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/Ray_Box_Summary.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/star.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/Alternative.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/alongnormal.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/alongaxis.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/compute3para.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/usefulinfo.png">
+<meta property="og:updated_time" content="2019-10-11T08:19:23.271Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ray Casting II Note">
+<meta name="twitter:description" content="[TOC] Ray Casting II NoteRay-Box Intersection(射线- 方体求交) 前提   轴对齐  Box：从(X1, Y1, Z1) - - &amp;gt; (X2, Y2, Z2)  Ray: P(t) = $R_o$ + t$R_d$    朴素求交方法 6个平面方程，计算所有交点  最近的交点在Box上  注意交点是在每个平面的正确一侧：Ax + By + Cz">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/testpara.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/">
+
+
+
+
+
+  <title>Ray Casting II Note | Mirocos's blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7def3e39fcff7e066c7a83b56b268c0f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mirocos's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">自闭肥宅，Dota赛高！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mirocos">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mirocos's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ray Casting II Note</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-11T16:19:10+08:00">
+                2019-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mit-6-837-Computer-Graphics-Learning-Note/" itemprop="url" rel="index">
+                    <span itemprop="name">Mit 6.837 Computer Graphics Learning Note</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>[TOC]</p>
+<h1 id="Ray-Casting-II-Note"><a href="#Ray-Casting-II-Note" class="headerlink" title="Ray Casting II Note"></a>Ray Casting II Note</h1><h2 id="Ray-Box-Intersection-射线-方体求交"><a href="#Ray-Box-Intersection-射线-方体求交" class="headerlink" title="Ray-Box Intersection(射线- 方体求交)"></a>Ray-Box Intersection(射线- 方体求交)</h2><hr>
+<font size="5" color="red">前提</font>
+
+<ul>
+<li><p>轴对齐</p>
+</li>
+<li><p>Box：从(X1, Y1, Z1) - - &gt; (X2, Y2, Z2)</p>
+</li>
+<li><p>Ray: P(t) = $R_o$ + t$R_d$ </p>
+</li>
+</ul>
+<h3 id="朴素求交方法"><a href="#朴素求交方法" class="headerlink" title="朴素求交方法"></a>朴素求交方法</h3><ul>
+<li><p>6个平面方程，计算所有交点</p>
+</li>
+<li><p>最近的交点在Box上</p>
+<ul>
+<li>注意交点是在每个平面的正确一侧：Ax + By + Cz + D &lt; 0</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何减少计算量"><a href="#如何减少计算量" class="headerlink" title="如何减少计算量"></a>如何减少计算量</h3><ul>
+<li><p>互相平行的一对平面有相同的法向量（Normal）</p>
+</li>
+<li><p>一次计算一维</p>
+<ul>
+<li><p>测试是否平行</p>
+</li>
+<li><p>如果$R_{dx} = 0$  &amp;&amp;  $R_{ox} &lt; X_1$ or $R_{ox} &gt; X_2$, 则无交点</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/testpara.png" title="test if parallel">
+<ul>
+<li><p>对每一个dimension求交(<font color="blue">这里求出的t1和t2应该是原射线方程t的倍数</font>)</p>
+<ul>
+<li><p>$t_1 = (X_1 -  R_{ox})/R_{dx}$</p>
+</li>
+<li><p>$t_2 = (X_2 -  R_{ox})/R_{dx}$</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/onedemension_example.png" title="One Dimension Example">
+<ul>
+<li><p>保留$t_{near}$ &amp; $t_{far}$</p>
+<ul>
+<li>If $t_1 &gt; t{near}, t_{near} = t1$</li>
+<li>If $t_2 &gt; t_{far}, t_{far} = t2$</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/closest_farest.png" title="Maintain closest and farthest">
+<ul>
+<li><p>射线Ray和Box有交集吗？</p>
+<ul>
+<li>If $t_{near} &gt; t_{far}$, 则没有交集（missed）</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/missed.png" title="Box is missed">
+<ul>
+<li>If $t_{far}&lt;t_{min}$, 则Box在射线后方（behind）</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/behind.png" title="One Box is behind">  
+<ul>
+<li><p>获得正确的交点</p>
+<ul>
+<li><p>If $t_{near} &gt; t_{min}$,则最近的交点在$t_{near}$</p>
+</li>
+<li><p>否则最近的交点在$t_{far}$</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/correctIntersection.png" title="Return the Correct Intersection">
+<h3 id="射线盒体求交概括"><a href="#射线盒体求交概括" class="headerlink" title="射线盒体求交概括"></a>射线盒体求交概括</h3><img src="/2019/10/11/Ray-Casting-II-Note/Ray_Box_Summary.png" title="Ray- Box Intersection Summary">
+<hr>
+<h2 id="射线多边形求交"><a href="#射线多边形求交" class="headerlink" title="射线多边形求交"></a>射线多边形求交</h2><font color="red">实际上可以归结为和平面求交</font>
+
+
+
+<h3 id="检测交点是否在多边形内"><a href="#检测交点是否在多边形内" class="headerlink" title="检测交点是否在多边形内"></a>检测交点是否在多边形内</h3><ul>
+<li><p>在2D平面内</p>
+<ul>
+<li>从交点向任意一个方向（最好是和轴平行）发出射线</li>
+<li>获得交点的个数<ul>
+<li>奇数个数，交点在多边形内部</li>
+<li>偶数个数，交点在多边形外部</li>
+</ul>
+</li>
+<li>如何解决五角星的问题<ul>
+<li>对五角星的边进行编号，在内部的为+，外部为- </li>
+<li>如果射线交点两侧是+和- ，则计数</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/star.png" title="Winding Number">
+<ul>
+<li><strong>另一种角度的方法</strong><ul>
+<li>​    对交点和多变形构成的夹角求</li>
+<li>If $Sum = k*{\pm360\degree,k为正整数}$，则点在多边形内部</li>
+<li>If $Sum = 0\degree$, 则点在多边形外部</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/Alternative.png" title="Alternative Definition">
+<ul>
+<li><p><strong>如何将图形投影到2D平面上</strong></p>
+<ul>
+<li>沿着平面法向量</li>
+<li>这太耗时了</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/alongnormal.png" title="Return Along Normal">
+<ul>
+<li>沿着坐标轴<ul>
+<li>只需要舍弃一维信息即可，往往是深度或者高度</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/alongaxis.png" title="Return Along Axis">
+<hr>
+<h2 id="射线-三角形求交"><a href="#射线-三角形求交" class="headerlink" title="射线- 三角形求交"></a>射线- 三角形求交</h2><ul>
+<li>有两种方法<ul>
+<li>使用射线- 多边形求交</li>
+<li><strong>更好的，使用重心坐标</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="平面重心坐标定义"><a href="#平面重心坐标定义" class="headerlink" title="平面重心坐标定义"></a>平面重心坐标定义</h3><ul>
+<li><p>$P(\alpha,\beta,\gamma) = \alpha a+ \beta b + \gamma c, 且 \alpha + \beta+\gamma = 1$</p>
+</li>
+<li><p>$\alpha,\beta,\gamma\in(0,1)$</p>
+</li>
+<li><p>如何计算这三个参数</p>
+<ul>
+<li>$\alpha = A_a/A \space\space   \beta = A_b/A \space\space \gamma = A_c/A$</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/compute3para.png" title="Compute $\alpha,\beta,\gamma$">
+<ul>
+<li>在这其中的一些有用的知识<ul>
+<li>P是a和Q的重心</li>
+<li>$A_a$是线段aQ之间的比例系数</li>
+<li>所有在过P点且和直线bc平行的直线上的点有这一样的$\alpha$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/usefulinfo.png">
+<ul>
+<li>方程化简<ul>
+<li>$因为 \alpha+\beta+\gamma=1,则\alpha = 1- \beta- \gamma$</li>
+<li>$P(\alpha,\beta,\gamma) = \alpha a+ \beta b + \gamma c, 且 \alpha + \beta+\gamma = 1$</li>
+<li>$P(\beta,\gamma) = (1- \beta- \gamma)a+\beta b + \gamma= a + \beta(b- a)+\gamma(c- a)$</li>
+</ul>
+</li>
+</ul>
+<h3 id="与重心三角形求交"><a href="#与重心三角形求交" class="headerlink" title="与重心三角形求交"></a>与重心三角形求交</h3><ul>
+<li><p>$P(t) = P(\beta,\gamma)$</p>
+</li>
+<li><p>$R_o+t*R_d = a+\beta(b- a)+\gamma(c- a)$</p>
+<ul>
+<li>$R_{ox}+tR_{dx} = a_x+\beta(b_x- a_x)+\gamma(c_x- a_x)$</li>
+<li>$R_{oy}+tR_{dy} = a_y+\beta(b_y- a_y)+\gamma(c_z- a_z)$</li>
+</ul>
+</li>
+<li>$R_{oz}+tR_{dz} = a_z+\beta(b_z- a_z)+\gamma(c_z- a_z)$</li>
+</ul>
+<script type="math/tex; mode=display">
+      \Rightarrow
+
+  ​    \begin{bmatrix} 
+
+  ​       a_x- b_x & a_x- c_x & R_{dx} \\
+
+  ​       a_y- b_y & a_y- c_y & R_{dy} \\
+
+  ​       a_z- b_z & a_z- c_z & R_{dz}
+
+  ​    \end{bmatrix}
+
+  ​    \begin{bmatrix}
+
+  ​       \beta \\
+
+  ​       \gamma\\
+
+  ​       t
+
+  ​    \end{bmatrix}=
+
+  ​    \begin{bmatrix}
+
+  ​        a_x- R_{ox}\\
+
+  ​        a_y- R_{oy}\\
+
+  ​        a_z- R_{oz}
+
+  ​    \end{bmatrix}</script><hr>
+<script type="math/tex; mode=display">
+    A = 
+
+​    \begin{bmatrix} 
+
+​       a_x- b_x & a_x- c_x & R_{dx} \\
+
+​       a_y- b_y & a_y- c_y & R_{dy} \\
+
+​       a_z- b_z & a_z- c_z & R_{dz}
+
+​    \end{bmatrix}</script><script type="math/tex; mode=display">
+ \beta = \frac{
+
+​      \begin{bmatrix} 
+
+​       a_x- R_{ox} & a_x- c_x & R_{dx} \\
+
+​       a_y- R_{oy} & a_y- c_y & R_{dy} \\
+
+​       a_z- R_{oz} & a_z- c_z & R_{dz}
+
+​    \end{bmatrix} 
+
+​    }{|A|}</script><script type="math/tex; mode=display">
+\gamma = \frac{
+
+​      \begin{bmatrix} 
+
+​       a_x- b_x & a_x- R_{ox} & R_{dx} \\
+
+​       a_y- b_y & a_y- R_{oy} & R_{dy} \\
+
+​       a_z- b_z & a_z- R_{oz} & R_{dz}
+
+​    \end{bmatrix} 
+
+   }{|A|}</script><script type="math/tex; mode=display">
+    t = \frac{
+
+​    \begin{bmatrix} 
+
+​       a_x- b_x & a_x- c_x & R_{ox} \\
+
+​       a_y- b_y & a_y- c_y & R_{oy} \\
+
+​       a_z- b_z & a_z- c_z & R_{oz}
+
+​    \end{bmatrix} 
+
+​    }{|A|}</script><hr>
+<ul>
+<li>If $\beta + \gamma &lt; 1$,   $\beta&gt;0$, $\gamma&gt;0$ ,$t &gt; t_{min}$, 则有交点</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/09/Ray-Casting-I-Note 16.07.52/" rel="next" title="Ray Casting I Note">
+                <i class="fa fa-chevron-left"></i> Ray Casting I Note
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Mirocos</p>
+              <p class="site-description motion-element" itemprop="description">念念不忘，必有回响！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ray-Casting-II-Note"><span class="nav-number">1.</span> <span class="nav-text">Ray Casting II Note</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ray-Box-Intersection-射线-方体求交"><span class="nav-number">1.1.</span> <span class="nav-text">Ray-Box Intersection(射线- 方体求交)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#朴素求交方法"><span class="nav-number">1.1.1.</span> <span class="nav-text">朴素求交方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何减少计算量"><span class="nav-number">1.1.2.</span> <span class="nav-text">如何减少计算量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#射线盒体求交概括"><span class="nav-number">1.1.3.</span> <span class="nav-text">射线盒体求交概括</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#射线多边形求交"><span class="nav-number">1.2.</span> <span class="nav-text">射线多边形求交</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检测交点是否在多边形内"><span class="nav-number">1.2.1.</span> <span class="nav-text">检测交点是否在多边形内</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#射线-三角形求交"><span class="nav-number">1.3.</span> <span class="nav-text">射线- 三角形求交</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#平面重心坐标定义"><span class="nav-number">1.3.1.</span> <span class="nav-text">平面重心坐标定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与重心三角形求交"><span class="nav-number">1.3.2.</span> <span class="nav-text">与重心三角形求交</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mirocos</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.staticfile.org/MathJax/MathJax-2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

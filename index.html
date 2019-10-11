@@ -262,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/09/Ray-Casting-I-Note/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/11/Ray-Casting-II-Note/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mirocos">
@@ -281,7 +281,408 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/10/09/Ray-Casting-I-Note/" itemprop="url">Ray Casting I Note</a></h1>
+                <a class="post-title-link" href="/2019/10/11/Ray-Casting-II-Note/" itemprop="url">Ray Casting II Note</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-11T16:19:10+08:00">
+                2019-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mit-6-837-Computer-Graphics-Learning-Note/" itemprop="url" rel="index">
+                    <span itemprop="name">Mit 6.837 Computer Graphics Learning Note</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>[TOC]</p>
+<h1 id="Ray-Casting-II-Note"><a href="#Ray-Casting-II-Note" class="headerlink" title="Ray Casting II Note"></a>Ray Casting II Note</h1><h2 id="Ray-Box-Intersection-射线-方体求交"><a href="#Ray-Box-Intersection-射线-方体求交" class="headerlink" title="Ray-Box Intersection(射线- 方体求交)"></a>Ray-Box Intersection(射线- 方体求交)</h2><hr>
+<font size="5" color="red">前提</font>
+
+<ul>
+<li><p>轴对齐</p>
+</li>
+<li><p>Box：从(X1, Y1, Z1) - - &gt; (X2, Y2, Z2)</p>
+</li>
+<li><p>Ray: P(t) = $R_o$ + t$R_d$ </p>
+</li>
+</ul>
+<h3 id="朴素求交方法"><a href="#朴素求交方法" class="headerlink" title="朴素求交方法"></a>朴素求交方法</h3><ul>
+<li><p>6个平面方程，计算所有交点</p>
+</li>
+<li><p>最近的交点在Box上</p>
+<ul>
+<li>注意交点是在每个平面的正确一侧：Ax + By + Cz + D &lt; 0</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何减少计算量"><a href="#如何减少计算量" class="headerlink" title="如何减少计算量"></a>如何减少计算量</h3><ul>
+<li><p>互相平行的一对平面有相同的法向量（Normal）</p>
+</li>
+<li><p>一次计算一维</p>
+<ul>
+<li><p>测试是否平行</p>
+</li>
+<li><p>如果$R_{dx} = 0$  &amp;&amp;  $R_{ox} &lt; X_1$ or $R_{ox} &gt; X_2$, 则无交点</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/testpara.png" title="test if parallel">
+<ul>
+<li><p>对每一个dimension求交(<font color="blue">这里求出的t1和t2应该是原射线方程t的倍数</font>)</p>
+<ul>
+<li><p>$t_1 = (X_1 -  R_{ox})/R_{dx}$</p>
+</li>
+<li><p>$t_2 = (X_2 -  R_{ox})/R_{dx}$</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/onedemension_example.png" title="One Dimension Example">
+<ul>
+<li><p>保留$t_{near}$ &amp; $t_{far}$</p>
+<ul>
+<li>If $t_1 &gt; t{near}, t_{near} = t1$</li>
+<li>If $t_2 &gt; t_{far}, t_{far} = t2$</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/closest_farest.png" title="Maintain closest and farthest">
+<ul>
+<li><p>射线Ray和Box有交集吗？</p>
+<ul>
+<li>If $t_{near} &gt; t_{far}$, 则没有交集（missed）</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/missed.png" title="Box is missed">
+<ul>
+<li>If $t_{far}&lt;t_{min}$, 则Box在射线后方（behind）</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/behind.png" title="One Box is behind">  
+<ul>
+<li><p>获得正确的交点</p>
+<ul>
+<li><p>If $t_{near} &gt; t_{min}$,则最近的交点在$t_{near}$</p>
+</li>
+<li><p>否则最近的交点在$t_{far}$</p>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/correctIntersection.png" title="Return the Correct Intersection">
+<h3 id="射线盒体求交概括"><a href="#射线盒体求交概括" class="headerlink" title="射线盒体求交概括"></a>射线盒体求交概括</h3><img src="/2019/10/11/Ray-Casting-II-Note/Ray_Box_Summary.png" title="Ray- Box Intersection Summary">
+<hr>
+<h2 id="射线多边形求交"><a href="#射线多边形求交" class="headerlink" title="射线多边形求交"></a>射线多边形求交</h2><font color="red">实际上可以归结为和平面求交</font>
+
+
+
+<h3 id="检测交点是否在多边形内"><a href="#检测交点是否在多边形内" class="headerlink" title="检测交点是否在多边形内"></a>检测交点是否在多边形内</h3><ul>
+<li><p>在2D平面内</p>
+<ul>
+<li>从交点向任意一个方向（最好是和轴平行）发出射线</li>
+<li>获得交点的个数<ul>
+<li>奇数个数，交点在多边形内部</li>
+<li>偶数个数，交点在多边形外部</li>
+</ul>
+</li>
+<li>如何解决五角星的问题<ul>
+<li>对五角星的边进行编号，在内部的为+，外部为- </li>
+<li>如果射线交点两侧是+和- ，则计数</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/star.png" title="Winding Number">
+<ul>
+<li><strong>另一种角度的方法</strong><ul>
+<li>​    对交点和多变形构成的夹角求</li>
+<li>If $Sum = k*{\pm360\degree,k为正整数}$，则点在多边形内部</li>
+<li>If $Sum = 0\degree$, 则点在多边形外部</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/Alternative.png" title="Alternative Definition">
+<ul>
+<li><p><strong>如何将图形投影到2D平面上</strong></p>
+<ul>
+<li>沿着平面法向量</li>
+<li>这太耗时了</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/alongnormal.png" title="Return Along Normal">
+<ul>
+<li>沿着坐标轴<ul>
+<li>只需要舍弃一维信息即可，往往是深度或者高度</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/alongaxis.png" title="Return Along Axis">
+<hr>
+<h2 id="射线-三角形求交"><a href="#射线-三角形求交" class="headerlink" title="射线- 三角形求交"></a>射线- 三角形求交</h2><ul>
+<li>有两种方法<ul>
+<li>使用射线- 多边形求交</li>
+<li><strong>更好的，使用重心坐标</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="平面重心坐标定义"><a href="#平面重心坐标定义" class="headerlink" title="平面重心坐标定义"></a>平面重心坐标定义</h3><ul>
+<li><p>$P(\alpha,\beta,\gamma) = \alpha a+ \beta b + \gamma c, 且 \alpha + \beta+\gamma = 1$</p>
+</li>
+<li><p>$\alpha,\beta,\gamma\in(0,1)$</p>
+</li>
+<li><p>如何计算这三个参数</p>
+<ul>
+<li>$\alpha = A_a/A \space\space   \beta = A_b/A \space\space \gamma = A_c/A$</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/compute3para.png" title="Compute $\alpha,\beta,\gamma$">
+<ul>
+<li>在这其中的一些有用的知识<ul>
+<li>P是a和Q的重心</li>
+<li>$A_a$是线段aQ之间的比例系数</li>
+<li>所有在过P点且和直线bc平行的直线上的点有这一样的$\alpha$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<img src="/2019/10/11/Ray-Casting-II-Note/usefulinfo.png">
+<ul>
+<li>方程化简<ul>
+<li>$因为 \alpha+\beta+\gamma=1,则\alpha = 1- \beta- \gamma$</li>
+<li>$P(\alpha,\beta,\gamma) = \alpha a+ \beta b + \gamma c, 且 \alpha + \beta+\gamma = 1$</li>
+<li>$P(\beta,\gamma) = (1- \beta- \gamma)a+\beta b + \gamma= a + \beta(b- a)+\gamma(c- a)$</li>
+</ul>
+</li>
+</ul>
+<h3 id="与重心三角形求交"><a href="#与重心三角形求交" class="headerlink" title="与重心三角形求交"></a>与重心三角形求交</h3><ul>
+<li><p>$P(t) = P(\beta,\gamma)$</p>
+</li>
+<li><p>$R_o+t*R_d = a+\beta(b- a)+\gamma(c- a)$</p>
+<ul>
+<li>$R_{ox}+tR_{dx} = a_x+\beta(b_x- a_x)+\gamma(c_x- a_x)$</li>
+<li>$R_{oy}+tR_{dy} = a_y+\beta(b_y- a_y)+\gamma(c_z- a_z)$</li>
+</ul>
+</li>
+<li>$R_{oz}+tR_{dz} = a_z+\beta(b_z- a_z)+\gamma(c_z- a_z)$</li>
+</ul>
+<script type="math/tex; mode=display">
+      \Rightarrow
+
+  ​    \begin{bmatrix} 
+
+  ​       a_x- b_x & a_x- c_x & R_{dx} \\
+
+  ​       a_y- b_y & a_y- c_y & R_{dy} \\
+
+  ​       a_z- b_z & a_z- c_z & R_{dz}
+
+  ​    \end{bmatrix}
+
+  ​    \begin{bmatrix}
+
+  ​       \beta \\
+
+  ​       \gamma\\
+
+  ​       t
+
+  ​    \end{bmatrix}=
+
+  ​    \begin{bmatrix}
+
+  ​        a_x- R_{ox}\\
+
+  ​        a_y- R_{oy}\\
+
+  ​        a_z- R_{oz}
+
+  ​    \end{bmatrix}</script><hr>
+<script type="math/tex; mode=display">
+    A = 
+
+​    \begin{bmatrix} 
+
+​       a_x- b_x & a_x- c_x & R_{dx} \\
+
+​       a_y- b_y & a_y- c_y & R_{dy} \\
+
+​       a_z- b_z & a_z- c_z & R_{dz}
+
+​    \end{bmatrix}</script><script type="math/tex; mode=display">
+ \beta = \frac{
+
+​      \begin{bmatrix} 
+
+​       a_x- R_{ox} & a_x- c_x & R_{dx} \\
+
+​       a_y- R_{oy} & a_y- c_y & R_{dy} \\
+
+​       a_z- R_{oz} & a_z- c_z & R_{dz}
+
+​    \end{bmatrix} 
+
+​    }{|A|}</script><script type="math/tex; mode=display">
+\gamma = \frac{
+
+​      \begin{bmatrix} 
+
+​       a_x- b_x & a_x- R_{ox} & R_{dx} \\
+
+​       a_y- b_y & a_y- R_{oy} & R_{dy} \\
+
+​       a_z- b_z & a_z- R_{oz} & R_{dz}
+
+​    \end{bmatrix} 
+
+   }{|A|}</script><script type="math/tex; mode=display">
+    t = \frac{
+
+​    \begin{bmatrix} 
+
+​       a_x- b_x & a_x- c_x & R_{ox} \\
+
+​       a_y- b_y & a_y- c_y & R_{oy} \\
+
+​       a_z- b_z & a_z- c_z & R_{oz}
+
+​    \end{bmatrix} 
+
+​    }{|A|}</script><hr>
+<ul>
+<li>If $\beta + \gamma &lt; 1$,   $\beta&gt;0$, $\gamma&gt;0$ ,$t &gt; t_{min}$, 则有交点</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/09/Ray-Casting-I-Note 16.07.52/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mirocos">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mirocos's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/09/Ray-Casting-I-Note 16.07.52/" itemprop="url">Ray Casting I Note</a></h1>
         
 
         <div class="post-meta">
@@ -357,9 +758,9 @@
           
             <p>[TOC]</p>
 <h1 id="Ray-Casting-I-NOTE"><a href="#Ray-Casting-I-NOTE" class="headerlink" title="Ray Casting I NOTE"></a>Ray Casting I NOTE</h1><h2 id="Ray-Casting-Basics"><a href="#Ray-Casting-Basics" class="headerlink" title="Ray Casting Basics"></a>Ray Casting Basics</h2><h3 id="基本算法"><a href="#基本算法" class="headerlink" title="基本算法"></a>基本算法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">For  every pixel											// 对于每一个像素块</span><br><span class="line">   Construct a ray from the eye				// 从观察位置（眼睛）发出一条射线</span><br><span class="line">   For every object in the scene			// 对在场景中的每一个对象（物体）</span><br><span class="line">   		 Find intersection with the ray	// 求射线与对象的交集（点的集合）</span><br><span class="line">   		 Keep if closest		// 如果是最近的，就保留它（这里可能存在歧义）</span><br></pre></td></tr></table></figure>
-<img src="/2019/10/09/Ray-Casting-I-Note/overview.png" title="Ray Casting OverView">
+
 <h3 id="什么是Shading？"><a href="#什么是Shading？" class="headerlink" title="什么是Shading？"></a>什么是Shading？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">For every pixel</span><br><span class="line"> 		Construct a ray from the eye</span><br><span class="line"> 		For every object in the scene</span><br><span class="line"> 				Find intersection with the ray</span><br><span class="line"> 				Keep if closest</span><br><span class="line"> 		Shade depending on the light and normal vector 	// 当每个pixel上有图像时，根据光线和接触点法线进行计算和渲染。</span><br></pre></td></tr></table></figure>
-<img src="/2019/10/09/Ray-Casting-I-Note/Shading.png" title="Shading">
+
 <h4 id="影响Shading的几个因素"><a href="#影响Shading的几个因素" class="headerlink" title="影响Shading的几个因素"></a>影响Shading的几个因素</h4><ul>
 <li><p>===Surface/Scene Characteristics ===</p>
 <ul>
@@ -369,7 +770,7 @@
 </ul>
 </li>
 </ul>
-<img src="/2019/10/09/Ray-Casting-I-Note/Shading_elements.png" title="Characteristics">
+
 <ul>
 <li><p>===Material Properties===</p>
 <ul>
@@ -381,8 +782,8 @@
 
 </li>
 </ul>
-<img src="/2019/10/09/Ray-Casting-I-Note/material.png" title="material example">
-<h3 id="Secondary-rays-shadows-reflection-refraction"><a href="#Secondary-rays-shadows-reflection-refraction" class="headerlink" title="Secondary rays(shadows, reflection, refraction)"></a>Secondary rays(shadows, reflection, refraction)</h3><img src="/2019/10/09/Ray-Casting-I-Note/secondary_rays.png" title="secondary_rays">
+
+<h3 id="Secondary-rays-shadows-reflection-refraction"><a href="#Secondary-rays-shadows-reflection-refraction" class="headerlink" title="Secondary rays(shadows, reflection, refraction)"></a>Secondary rays(shadows, reflection, refraction)</h3>
 <h3 id="如何表示一根射线"><a href="#如何表示一根射线" class="headerlink" title="如何表示一根射线"></a>如何表示一根射线</h3><ul>
 <li><p>两个向量</p>
 <ul>
@@ -396,16 +797,16 @@
 </ul>
 </li>
 </ul>
-<img src="/2019/10/09/Ray-Casting-I-Note/rayline.png" title="ray">  
+  
 <hr>
-<h2 id="Camera-and-Ray-Generation"><a href="#Camera-and-Ray-Generation" class="headerlink" title="Camera and Ray Generation"></a>Camera and Ray Generation</h2><h3 id="Cameras相机"><a href="#Cameras相机" class="headerlink" title="Cameras相机"></a>Cameras相机</h3><img src="/2019/10/09/Ray-Casting-I-Note/Camera.png" title="algorithm part camera">
+<h2 id="Camera-and-Ray-Generation"><a href="#Camera-and-Ray-Generation" class="headerlink" title="Camera and Ray Generation"></a>Camera and Ray Generation</h2><h3 id="Cameras相机"><a href="#Cameras相机" class="headerlink" title="Cameras相机"></a>Cameras相机</h3>
 <h4 id="Camera-Description如何去描述一个相机"><a href="#Camera-Description如何去描述一个相机" class="headerlink" title="Camera Description如何去描述一个相机"></a>Camera Description如何去描述一个相机</h4><ul>
 <li>Eye Point （视点Origin）<font color="red"> e(center)</font></li>
 <li>Orthobasis（坐标）<font color="red">u, v, w(horizontal, up, direction)</font></li>
 <li>Field of view（观看方向LookAt）<font color="red">angle</font></li>
 <li>Image rectangle （图像矩形）<font color="red">height, width</font></li>
 </ul>
-<img src="/2019/10/09/Ray-Casting-I-Note/image-20191009202514507.png" title="camera_description">
+
 <h3 id="Perspective（透视投影）-vs-Orthographic（正交投影）"><a href="#Perspective（透视投影）-vs-Orthographic（正交投影）" class="headerlink" title="Perspective（透视投影） vs. Orthographic（正交投影）"></a>Perspective（透视投影） vs. Orthographic（正交投影）</h3><ul>
 <li>就正交投影来说<ul>
 <li>线条平行</li>
@@ -414,7 +815,7 @@
 </ul>
 </li>
 </ul>
-<h4 id="Orthographic-Camera"><a href="#Orthographic-Camera" class="headerlink" title="Orthographic Camera"></a>Orthographic Camera</h4><img src="/2019/10/09/Ray-Casting-I-Note/image-20191009203131373.png" title="Orthographic Camera">
+<h4 id="Orthographic-Camera"><a href="#Orthographic-Camera" class="headerlink" title="Orthographic Camera"></a>Orthographic Camera</h4>
 <ul>
 <li>如何生成射线Ray ===（这里有点迷）===<ul>
 <li>Origin = center + (x-0.5)*size*horizontal+(y-0.5)*size*up</li>
@@ -423,9 +824,9 @@
 </li>
 </ul>
 <hr>
-<h2 id="Ray-Plane-Intersection（射线与平面相交）"><a href="#Ray-Plane-Intersection（射线与平面相交）" class="headerlink" title="Ray-Plane Intersection（射线与平面相交）"></a>Ray-Plane Intersection（射线与平面相交）</h2><img src="/2019/10/09/Ray-Casting-I-Note/image-20191009203837157.png" title="ray-plane">
-<h3 id="在这之前解决射线与平面相交的问题"><a href="#在这之前解决射线与平面相交的问题" class="headerlink" title="在这之前解决射线与平面相交的问题"></a>在这之前解决射线与平面相交的问题</h3><img src="/2019/10/09/Ray-Casting-I-Note/ray-plane-overview.png" title="ray-plane-intersection">
-<h3 id="如何表示一个3D-平面"><a href="#如何表示一个3D-平面" class="headerlink" title="如何表示一个3D 平面"></a>如何表示一个3D 平面</h3><img src="/2019/10/09/Ray-Casting-I-Note/3DPlane.png" title="3DPlane">
+<h2 id="Ray-Plane-Intersection（射线与平面相交）"><a href="#Ray-Plane-Intersection（射线与平面相交）" class="headerlink" title="Ray-Plane Intersection（射线与平面相交）"></a>Ray-Plane Intersection（射线与平面相交）</h2>
+<h3 id="在这之前解决射线与平面相交的问题"><a href="#在这之前解决射线与平面相交的问题" class="headerlink" title="在这之前解决射线与平面相交的问题"></a>在这之前解决射线与平面相交的问题</h3>
+<h3 id="如何表示一个3D-平面"><a href="#如何表示一个3D-平面" class="headerlink" title="如何表示一个3D 平面"></a>如何表示一个3D 平面</h3>
 <ul>
 <li>Plane defined by<ul>
 <li>Po = (x, y, z)</li>
@@ -442,12 +843,12 @@
 </ul>
 </li>
 </ul>
-<h3 id="求交公式"><a href="#求交公式" class="headerlink" title="求交公式"></a>求交公式</h3><img src="/2019/10/09/Ray-Casting-I-Note/intersectionEquation.png" title="intersection Equation">
+<h3 id="求交公式"><a href="#求交公式" class="headerlink" title="求交公式"></a>求交公式</h3>
 <ul>
 <li>注意交点是比前一个点更近的 ===P(t) &lt; $t_{current}$===</li>
 <li>注意交点必须是在视线之前===P(t) &gt; $t_{min}$===</li>
 </ul>
-<img src="/2019/10/09/Ray-Casting-I-Note/intersection2.png" title="pointToChoose">
+
 <hr>
 <h2 id="Ray-Sphere-Object-Intersection（射线与球体求交）"><a href="#Ray-Sphere-Object-Intersection（射线与球体求交）" class="headerlink" title="Ray-Sphere(Object) Intersection（射线与球体求交）"></a>Ray-Sphere(Object) Intersection（射线与球体求交）</h2><h3 id="如何表示一个Sphere"><a href="#如何表示一个Sphere" class="headerlink" title="如何表示一个Sphere"></a>如何表示一个Sphere</h3><ul>
 <li>隐式方程<ul>
@@ -456,8 +857,8 @@
 </ul>
 </li>
 </ul>
-<img src="/2019/10/09/Ray-Casting-I-Note/image-20191009205751751.png" title="Sphere Description">
-<h3 id="射线与Sphere求交"><a href="#射线与Sphere求交" class="headerlink" title="射线与Sphere求交"></a>射线与Sphere求交</h3><img src="/2019/10/09/Ray-Casting-I-Note/ray-sphere.png" title="ray-sphere-intersection">
+
+<h3 id="射线与Sphere求交"><a href="#射线与Sphere求交" class="headerlink" title="射线与Sphere求交"></a>射线与Sphere求交</h3>
 <ul>
 <li>Quadratic: a$t^2$ + bt + c = 0<ul>
 <li>a = 1 ($||R_d|| = 1$ , normalized)</li>
@@ -1224,7 +1625,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
