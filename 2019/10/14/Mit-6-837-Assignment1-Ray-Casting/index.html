@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[TOC] Assignment1 Ray CastingTask Introduction https://groups.csail.mit.edu/graphics/classes/6.837/F04/assignments/assignment1/   主要实现几个基类和派生类  Object3D (pure virtual)  Sphere Group   Camera(pure virt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mit 6.837 Assignment1 Ray Casting">
+<meta property="og:url" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/index.html">
+<meta property="og:site_name" content="Mirocos&#39;s blog">
+<meta property="og:description" content="[TOC] Assignment1 Ray CastingTask Introduction https://groups.csail.mit.edu/graphics/classes/6.837/F04/assignments/assignment1/   主要实现几个基类和派生类  Object3D (pure virtual)  Sphere Group   Camera(pure virt">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_01.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_01.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_02.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_02.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_03.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_03.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_04.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_04.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_05.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_05.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_06.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_06.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_07.png">
+<meta property="og:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_07.png">
+<meta property="og:updated_time" content="2019-10-15T06:05:52.397Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mit 6.837 Assignment1 Ray Casting">
+<meta name="twitter:description" content="[TOC] Assignment1 Ray CastingTask Introduction https://groups.csail.mit.edu/graphics/classes/6.837/F04/assignments/assignment1/   主要实现几个基类和派生类  Object3D (pure virtual)  Sphere Group   Camera(pure virt">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/">
+
+
+
+
+
+  <title>Mit 6.837 Assignment1 Ray Casting | Mirocos's blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7def3e39fcff7e066c7a83b56b268c0f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mirocos's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">自闭肥宅，Dota赛高！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mirocos">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mirocos's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mit 6.837 Assignment1 Ray Casting</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-14T16:15:54+08:00">
+                2019-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mit-6-837-Computer-Graphics-Learning-Note/" itemprop="url" rel="index">
+                    <span itemprop="name">Mit 6.837 Computer Graphics Learning Note</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>[TOC]</p>
+<h1 id="Assignment1-Ray-Casting"><a href="#Assignment1-Ray-Casting" class="headerlink" title="Assignment1 Ray Casting"></a>Assignment1 Ray Casting</h1><h2 id="Task-Introduction"><a href="#Task-Introduction" class="headerlink" title="Task Introduction"></a>Task Introduction</h2><blockquote>
+<p><a href="https://groups.csail.mit.edu/graphics/classes/6.837/F04/assignments/assignment1/" target="_blank" rel="noopener">https://groups.csail.mit.edu/graphics/classes/6.837/F04/assignments/assignment1/</a></p>
+</blockquote>
+<ul>
+<li><p>主要实现几个基类和派生类</p>
+</li>
+<li><p>Object3D (pure virtual)</p>
+<ul>
+<li>Sphere</li>
+<li>Group</li>
+</ul>
+</li>
+<li><p>Camera(pure virtual)</p>
+<ul>
+<li>OrthgraphicCamera</li>
+</ul>
+</li>
+<li><font color="red">注意mit作业中给的scene_parser中的函数parseMaterials需要手动更改才可使用</font>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (num_materials &gt; count) &#123;</span><br><span class="line">    getToken(token);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(token, <span class="string">"PhongMaterial"</span>)) &#123;		<span class="comment">//将原Material改为PhongMaterial</span></span><br><span class="line">        materials[count] = parseMaterial();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">printf</span> (<span class="string">"Unknown token in parseMaterial: '%s'\n"</span>, token);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Achievement"><a href="#Achievement" class="headerlink" title="Achievement"></a>Achievement</h2><ul>
+<li><p>几个主要类中函数的实现</p>
+</li>
+<li><p>Sphere</p>
+<ul>
+<li>方法参考我的之前一篇博客</li>
+</ul>
+</li>
+</ul>
+<pre><code>[Ray Casting I Note]:https://mirocosphp.github.io/2019/10/09/Ray-Casting-I-Note/
+</code></pre>  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> Sphere::intersect(<span class="keyword">const</span> Ray &amp;r, Hit &amp;h, <span class="keyword">float</span> tmin)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Ray(t) = origin + t * direction</span></span><br><span class="line">    <span class="comment">// Sphere P(t): P*P - r*r = 0</span></span><br><span class="line">    <span class="keyword">bool</span> res = <span class="literal">false</span>;</span><br><span class="line">    Vec3f origin = r.getOrigin();</span><br><span class="line">    Vec3f direction = r.getDirection();</span><br><span class="line">    </span><br><span class="line"><span class="comment">//    float a = direction.Dot3(direction);</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// noticed that this resolution needs that the sphere is centered at the Origin of coordinate.</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">float</span> a = <span class="number">1.0</span>;                                           <span class="comment">// a should be 1.0 since direction is normailized</span></span><br><span class="line">    <span class="keyword">float</span> b = <span class="number">2</span> * direction.Dot3(origin - (*center));</span><br><span class="line">    <span class="keyword">float</span> c = (origin - *center).Dot3(origin-(*center)) - radius * radius;</span><br><span class="line">    <span class="keyword">float</span> delta  = b * b - <span class="number">4</span> * a * c;</span><br><span class="line">    <span class="keyword">float</span> t = INT_MAX * <span class="number">1.0f</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>( delta &gt; <span class="number">0</span>)      <span class="comment">//  No intersection Or just One intersection does not make sense;</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">float</span> discriminant = <span class="built_in">sqrt</span>(delta);</span><br><span class="line">        <span class="keyword">float</span> <span class="keyword">pos_t</span> = (-b + discriminant) * <span class="number">0.5f</span>;</span><br><span class="line">        <span class="keyword">float</span> <span class="keyword">neg_t</span> = (-b - discriminant) * <span class="number">0.5f</span>;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="comment">// the closest intersection is always the neg_t</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">neg_t</span> &gt;= tmin)</span><br><span class="line">        &#123;</span><br><span class="line">            t = <span class="keyword">neg_t</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">pos_t</span> &gt;= tmin)</span><br><span class="line">        &#123;</span><br><span class="line">            t = <span class="keyword">pos_t</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="comment">// t shoule be smaller than t_current</span></span><br><span class="line">        <span class="keyword">if</span>(t &lt; h.getT())</span><br><span class="line">        &#123;</span><br><span class="line">            h.<span class="built_in">set</span>(t, material, r);</span><br><span class="line">        &#125;</span><br><span class="line">        res = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        res = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Group</p>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">bool Group::intersect(const Ray &amp;r, Hit &amp;h, float tmin)</span><br><span class="line">&#123;</span><br><span class="line">    bool res = false;</span><br><span class="line">    for(int i = 0; i &lt; obj_num; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        if(obj_array[i] != NULL)</span><br><span class="line">        &#123;</span><br><span class="line">            if(obj_array[i]-&gt;intersect(r, h, tmin) == true)</span><br><span class="line">            &#123;</span><br><span class="line">                res = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        //printf(&quot;current t is %.2f\n&quot;,h.getT());</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>OrthographicCamera</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">OrthographicCamera::OrthographicCamera(<span class="keyword">const</span> Vec3f &amp;center, <span class="keyword">const</span> Vec3f &amp;direction, <span class="keyword">const</span> Vec3f &amp;up,<span class="keyword">const</span> <span class="keyword">float</span> &amp;size)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;center = <span class="keyword">new</span> Vec3f(center.x(),center.y(),center.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;direction = <span class="keyword">new</span> Vec3f(direction.x(),direction.y(),direction.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;up = <span class="keyword">new</span> Vec3f(up.x(),up.y(),up.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;size = size;</span><br><span class="line">    Vec3f::Cross3(*<span class="keyword">this</span>-&gt;horizontal, *<span class="keyword">this</span>-&gt;direction, *<span class="keyword">this</span>-&gt;up);</span><br><span class="line">    Vec3f::Cross3(*<span class="keyword">this</span>-&gt;up, *<span class="keyword">this</span>-&gt;direction, *horizontal);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>-&gt;up-&gt;Normalize();</span><br><span class="line">    <span class="keyword">this</span>-&gt;horizontal-&gt;Normalize();</span><br><span class="line">    <span class="keyword">this</span>-&gt;direction-&gt;Normalize();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Ray OrthographicCamera::generateRay(Vec2f point)</span><br><span class="line">&#123;</span><br><span class="line">    Vec3f origin = *center + *horizontal * point.x() * size * <span class="number">0.5f</span> + *up * point.y() * size * <span class="number">0.5f</span>;</span><br><span class="line">    <span class="keyword">return</span> Ray(origin, *direction);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="整体代码"><a href="#整体代码" class="headerlink" title="整体代码"></a>整体代码</h3><p><strong>Object3D.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> Object3D_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Object3D_h</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"ray.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"hit.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"material.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"vectors.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Object3D</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">intersect</span><span class="params">(<span class="keyword">const</span> Ray &amp;r, Hit &amp;h, <span class="keyword">float</span> tmin)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    Material* material;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* Object3D_h */</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>Sphere.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Sphere_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _Sphere_h</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Object3D.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"hit.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"ray.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"vectors.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sphere</span>:</span> <span class="keyword">public</span> Object3D</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ~Sphere()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">delete</span> center;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">intersect</span><span class="params">(<span class="keyword">const</span> Ray &amp;r, Hit &amp;h, <span class="keyword">float</span> tmin)</span></span>;</span><br><span class="line">    Sphere(<span class="keyword">const</span> Vec3f &amp;center,<span class="keyword">float</span> radius, Material* material);</span><br><span class="line">    </span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    Vec3f* center;</span><br><span class="line">    <span class="keyword">float</span> radius;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* _Sphere_h */</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>Sphere.cpp</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Sphere.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"vectors.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"material.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Object3D.h"</span></span></span><br><span class="line"></span><br><span class="line">Sphere::Sphere(<span class="keyword">const</span> Vec3f &amp;center, <span class="keyword">float</span> radius, Material* material)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;center = <span class="keyword">new</span> Vec3f(center.x(),center.y(),center.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;radius = radius;</span><br><span class="line">    <span class="keyword">this</span>-&gt;material = material;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> Sphere::intersect(<span class="keyword">const</span> Ray &amp;r, Hit &amp;h, <span class="keyword">float</span> tmin)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Ray(t) = origin + t * direction</span></span><br><span class="line">    <span class="comment">// Sphere P(t): P*P - r*r = 0</span></span><br><span class="line">    <span class="keyword">bool</span> res = <span class="literal">false</span>;</span><br><span class="line">    Vec3f origin = r.getOrigin();</span><br><span class="line">    Vec3f direction = r.getDirection();</span><br><span class="line">    </span><br><span class="line"><span class="comment">//    float a = direction.Dot3(direction);</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// noticed that this resolution needs that the sphere is centered at the Origin of coordinate.</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">float</span> a = <span class="number">1.0</span>;                                           <span class="comment">// a should be 1.0 since direction is normailized</span></span><br><span class="line">    <span class="keyword">float</span> b = <span class="number">2</span> * direction.Dot3(origin - (*center));</span><br><span class="line">    <span class="keyword">float</span> c = (origin - *center).Dot3(origin-(*center)) - radius * radius;</span><br><span class="line">    <span class="keyword">float</span> delta  = b * b - <span class="number">4</span> * a * c;</span><br><span class="line">    <span class="keyword">float</span> t = INT_MAX * <span class="number">1.0f</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>( delta &gt; <span class="number">0</span>)      <span class="comment">//  No intersection Or just One intersection does not make sense;</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">float</span> discriminant = <span class="built_in">sqrt</span>(delta);</span><br><span class="line">        <span class="keyword">float</span> <span class="keyword">pos_t</span> = (-b + discriminant) * <span class="number">0.5f</span>;</span><br><span class="line">        <span class="keyword">float</span> <span class="keyword">neg_t</span> = (-b - discriminant) * <span class="number">0.5f</span>;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="comment">// the closest intersection is always the neg_t </span></span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">neg_t</span> &gt;= tmin)</span><br><span class="line">        &#123;</span><br><span class="line">            t = <span class="keyword">neg_t</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">pos_t</span> &gt;= tmin)</span><br><span class="line">        &#123;</span><br><span class="line">            t = <span class="keyword">pos_t</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        <span class="comment">// t shoule be smaller than t_current</span></span><br><span class="line">        <span class="keyword">if</span>(t &lt; h.getT())</span><br><span class="line">        &#123;</span><br><span class="line">            h.<span class="built_in">set</span>(t, material, r);</span><br><span class="line">        &#125;</span><br><span class="line">        res = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        res = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Group.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> Group_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Group_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Object3D.h"</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Group</span>:</span><span class="keyword">public</span> Object3D</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Group(<span class="keyword">const</span> <span class="keyword">int</span> &amp;obj_num)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;obj_num = obj_num;</span><br><span class="line">        currentIndex = <span class="number">0</span>;</span><br><span class="line">        obj_array = <span class="keyword">new</span> Object3D*[obj_num];</span><br><span class="line">    &#125;</span><br><span class="line">    ~Group()</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; obj_num; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(obj_array[i] != <span class="literal">NULL</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">delete</span> obj_array[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">delete</span>[] obj_array;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getNextIndex</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addObject</span><span class="params">(<span class="keyword">int</span> index, Object3D *obj)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">intersect</span><span class="params">(<span class="keyword">const</span> Ray &amp;r, Hit &amp;h,<span class="keyword">float</span> tmin)</span></span>;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    Object3D** obj_array;</span><br><span class="line">    <span class="keyword">int</span> obj_num;</span><br><span class="line">    <span class="keyword">int</span> currentIndex;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* Group_h */</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>Group.cpp</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Group.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"hit.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> Group::addObject(<span class="keyword">int</span> index, Object3D *obj)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(index &lt; <span class="number">0</span> || index &gt;= obj_num)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"index is invalid..."</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(index &gt;= <span class="number">0</span> &amp;&amp; index &lt; obj_num)</span><br><span class="line">    &#123;</span><br><span class="line">      obj_array[index] = obj;</span><br><span class="line">     <span class="comment">// currentIndex++;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> Group::intersect(<span class="keyword">const</span> Ray &amp;r, Hit &amp;h, <span class="keyword">float</span> tmin)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">bool</span> res = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; obj_num; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(obj_array[i] != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(obj_array[i]-&gt;intersect(r, h, tmin) == <span class="literal">true</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                res = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//printf("current t is %.2f\n",h.getT());</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Not useful</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> Group::getNextIndex()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> currentIndex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Camera.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> Camera_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Camera_h</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"vectors.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"ray.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Camera</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> Ray <span class="title">generateRay</span><span class="params">(Vec2f point)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">float</span> <span class="title">getTMin</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* Camera_h */</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>OrthographicCamera.h</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> OrthographicCamera_h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OrthographicCamera_h</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"ray.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"vectors.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Camera.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OrthographicCamera</span>:</span> <span class="keyword">public</span> Camera</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    OrthographicCamera(<span class="keyword">const</span> Vec3f &amp;center, <span class="keyword">const</span> Vec3f &amp;direction, <span class="keyword">const</span> Vec3f &amp;up,<span class="keyword">const</span> <span class="keyword">float</span> &amp;size);</span><br><span class="line">    ~OrthographicCamera();</span><br><span class="line">    </span><br><span class="line">    <span class="function">Ray <span class="title">generateRay</span><span class="params">(Vec2f point)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">float</span> <span class="title">getTMin</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    Vec3f* center;</span><br><span class="line">    Vec3f* direction;</span><br><span class="line">    Vec3f* up;</span><br><span class="line">    Vec3f* horizontal;</span><br><span class="line">    <span class="keyword">float</span> size;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* OrthographicCamera_h */</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>OrthographicCamera.cpp</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"OrthographicCamera.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"ray.h"</span></span></span><br><span class="line"></span><br><span class="line">OrthographicCamera::OrthographicCamera(<span class="keyword">const</span> Vec3f &amp;center, <span class="keyword">const</span> Vec3f &amp;direction, <span class="keyword">const</span> Vec3f &amp;up,<span class="keyword">const</span> <span class="keyword">float</span> &amp;size)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">this</span>-&gt;center = <span class="keyword">new</span> Vec3f(center.x(),center.y(),center.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;direction = <span class="keyword">new</span> Vec3f(direction.x(),direction.y(),direction.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;up = <span class="keyword">new</span> Vec3f(up.x(),up.y(),up.z());</span><br><span class="line">    <span class="keyword">this</span>-&gt;size = size;</span><br><span class="line">    Vec3f::Cross3(*<span class="keyword">this</span>-&gt;horizontal, *<span class="keyword">this</span>-&gt;direction, *<span class="keyword">this</span>-&gt;up);</span><br><span class="line">    Vec3f::Cross3(*<span class="keyword">this</span>-&gt;up, *<span class="keyword">this</span>-&gt;direction, *horizontal);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>-&gt;up-&gt;Normalize();</span><br><span class="line">    <span class="keyword">this</span>-&gt;horizontal-&gt;Normalize();</span><br><span class="line">    <span class="keyword">this</span>-&gt;direction-&gt;Normalize();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">OrthographicCamera::~OrthographicCamera()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">delete</span> center;</span><br><span class="line">    <span class="keyword">delete</span> direction;</span><br><span class="line">    <span class="keyword">delete</span> up;</span><br><span class="line">    <span class="keyword">delete</span> horizontal;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">float</span> OrthographicCamera::getTMin() <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1.0f</span> * INT_MAX;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Ray OrthographicCamera::generateRay(Vec2f point)</span><br><span class="line">&#123;</span><br><span class="line">    Vec3f origin = *center + *horizontal * point.x() * size * <span class="number">0.5f</span> + *up * point.y() * size * <span class="number">0.5f</span>;</span><br><span class="line">    <span class="keyword">return</span> Ray(origin, *direction);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h2><ul>
+<li>raytracer -input scene1_01.txt -size 200 200 -output output1_01.tga -depth 9 10 depth1_01.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_01.png" title="output1_01"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_01.png" title="depth1_01"></div></div><div class="group-picture-row"></div></div></div>
+<ul>
+<li>raytracer -input scene1_02.txt -size 200 200 -output output1_02.tga -depth 8 12 depth1_02.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_02.png" title="output1_01"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_02.png" title="depth1_02"></div></div><div class="group-picture-row"></div></div></div>
+<ul>
+<li>raytracer -input scene1_03.txt -size 200 200 -output output1_03.tga -depth 8 12 depth1_03.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_03.png" title="output1_03"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_03.png" title="depth1_03"></div></div><div class="group-picture-row"></div></div></div>
+<ul>
+<li>raytracer -input scene1_04.txt -size 200 200 -output output1_04.tga -depth 12 17 depth1_04.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_04.png" title="output1_04"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_04.png" title="depth1_04"></div></div><div class="group-picture-row"></div></div></div>
+<ul>
+<li>raytracer -input scene1_05.txt -size 200 200 -output output1_05.tga -depth 14.5 19.5 depth1_05.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_05.png" title="output1_05"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_05.png" title="depth1_05"></div></div><div class="group-picture-row"></div></div></div>
+<ul>
+<li>raytracer -input scene1_06.txt -size 200 200 -output output1_06.tga -depth 3 7 depth1_06.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_06.png" title="output1_06"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_06.png" title="depth1_06"></div></div><div class="group-picture-row"></div></div></div>
+<ul>
+<li>raytracer -input scene1_07.txt -size 200 200 -output output1_07.tga -depth -2 2 depth1_07.tga</li>
+</ul>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/output1_07.png" title="output1_07"></div><div class="group-picture-column" style="width: 50%;"><img src="/2019/10/14/Mit-6-837-Assignment1-Ray-Casting/depth1_07.png" title="depth1_07"></div></div><div class="group-picture-row"></div></div></div>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/11/Ray-Casting-II-Note/" rel="next" title="Ray Casting II Note">
+                <i class="fa fa-chevron-left"></i> Ray Casting II Note
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Mirocos</p>
+              <p class="site-description motion-element" itemprop="description">念念不忘，必有回响！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Assignment1-Ray-Casting"><span class="nav-number">1.</span> <span class="nav-text">Assignment1 Ray Casting</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Task-Introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Task Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Achievement"><span class="nav-number">1.2.</span> <span class="nav-text">Achievement</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整体代码"><span class="nav-number">1.2.1.</span> <span class="nav-text">整体代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Result"><span class="nav-number">1.3.</span> <span class="nav-text">Result</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mirocos</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.staticfile.org/MathJax/MathJax-2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
